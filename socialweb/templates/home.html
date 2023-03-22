@@ -1,0 +1,93 @@
+{%extends 'base.html'%}
+{%block body%}
+<!-- my question section -->
+<div class="card text-bg-primary mb-3" style="max-width: 100%;">
+    <div class="card-header">
+    {%if request.user.profile.profile_pic%} 
+    <img src="{{requst.user.profile.profile_pic.url}}" class="rounded-circle" alt="..." height="80px">
+
+    {%endif%}
+    {{request.user}}
+    
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Post </h5>
+      <p class="card-text">
+        <form action="" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <textarea name="description" id="" cols="30" rows="10" class="form-control"></textarea>
+             <button type="submit">Post</button>
+        </form>
+      </p>
+    </div>
+  </div>
+
+
+<!-- end question section -->
+
+
+
+{%if request.user.profile%}
+    <a href="{%url 'profile-details'%}">view profile</a>
+    <a href="{%url 'profile-edit' request.user.profile.id %}">UpdateProfile</a>
+    {%else%}
+    <a href="{%url 'profile-add'%}">Addprofile</a>
+    {%endif%}
+
+    welcome {{request.user}}
+    <!-- question form section starts -->
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    {{form.as_p}}
+                    <button type="submit">Add</button>
+
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+    <!-- end question form section -->
+
+
+
+    <!-- question list section starts -->
+    {%for p in posts%}
+
+    <div>
+        {{p.description}}
+        
+        {%if p.image%}
+        <img src="{{c.image.url}}" alt="">
+
+        {%endif%}
+        asked by {{p.user}} on {{p.date}}
+    </div>
+    <div>
+        <h3>post your Comment</h3>
+        <form action="{%url 'add-comment' p.id%}" method="post">
+            {%csrf_token%}
+            <input type="text" placeholder="enter your Answer" name="answer">
+            <button type="submit">Add</button>
+        </form>
+
+    </div>
+
+    <!--answer list section  -->
+    <h2><u>Comment</u></h2>
+    {%for cmt in c.post_to_comment%}
+    <div>
+        {{cmt.title}} posted by {{cmt.user}} on {{cmt.created_date}} <a href="{%url 'upvote' cmt.id%}">upvote</a>{{cmt.upvote_count}}
+    </div>
+    {%endfor%}
+    <!-- end answerlist section -->
+
+    <hr>
+    {%endfor%}
+
+
+    <!-- question end section -->
+{%endblock%}
